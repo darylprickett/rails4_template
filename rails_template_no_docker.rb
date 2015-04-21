@@ -30,6 +30,26 @@ environment 'config.action_mailer.default_url_options: {host: localhost, port: 3
 rake "db:create"
 rake "db:migrate"
 
+run "cd #{@app_name}"
+run "rm app/assets/stylesheets/application.css"
+run "touch app/assets/stylesheets/application.scss"
+template = <<-TEMP
+@import "bootstrap-sass/assets/stylesheets/bootstrap-sprockets";
+@import "bootstrap-sass/assets/stylesheets/bootstrap";
+TEMP
+run "echo '#{template}' > app/assets/stylesheets/application.scss"
+
+template = <<-TEMP
+//= require jquery
+//= require bootstrap-sprockets
+//= require jquery_ujs
+//= require turbolinks
+//= require_tree .
+TEMP
+
+run "rm app/assets/javascripts/application.js"
+run "echo '#{template}' > app/assets/javascripts/application.js"
+
 git :init
 git add: '.'
 git commit: "-a -m 'Initial Commit'"
