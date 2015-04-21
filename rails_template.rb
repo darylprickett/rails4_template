@@ -1,7 +1,7 @@
-gemset_name = ask("What is the name of the projects gemset?")
+project_name = ask("What is the name of the project?")
 
-run "rvm gemset create #{gemset_name}"
-run "rvm gemset use #{gemset_name}"
+run "rvm gemset create #{project_name}"
+run "rvm gemset use #{project_name}"
 run "gem install pg -v '0.18.1'"
 
 gem 'devise'
@@ -30,4 +30,13 @@ environment 'config.action_mailer.default_url_options: {host: localhost, port: 3
 rake "db:create"
 rake "db:migrate"
 
+git :init
+git add: '.'
+git commit: "-a -m 'Initial Commit'"
+
+run "cd #{@app_name}"
+run "touch Dockerfile"
+run "echo 'FROM rails:onbuild' > Dockerfile"
+run "docker build -t #{project_name}_image ."
+run "docker run --name #{project_name} -d #{project_name}_image"
 
